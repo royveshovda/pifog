@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/mqtt.css" />
     <script src="js/mqttws31-min.js"></script>
-    <script src="js/index.js"></script>
+    <script src="js/doorman.js"></script>
     <title>MQTT</title>
   </head>
   <body onload="run_main()">
@@ -13,14 +13,12 @@
       <div class="circlelarge" id="yellowStatus" style="background-color:yellow;color:black;display:none">MAYBE</div>
       <div class="circlelarge" id="greenStatus" style="background-color:green;display:none">GOGOGO</div>
     </div>
-    <h1>State of doors</h1>
-    <div id="doors" class="door">
-      <h2>Doors</h2>
-      <div class="circlesmall" id="circle1">F</div>
-      <div class="circlesmall" id="circle2">M</div>
+    <div id="open">
+      <h1>Front door</h1>
+      <button id="openDoorButton" onclick="open_door()" disabled="true">Open door</button>
     </div>
     <div id="bottom" class="report">
-      <h2>Last repo</h2>
+      <h2>Last report</h2>
       <h3 id=timestampId>?</h3>
     </div>
     <img id="imageId" />
