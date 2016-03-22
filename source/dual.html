@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>All the important things</title>
+    <style type="text/css">
+      body {
+         margin: 0;
+         overflow: hidden;
+      }
+      #iframeleft {
+          position:absolute;
+          left: 0px;
+          width: 350px;
+          top: 0px;
+          height: 100%;
+      }
+      #iframeright {
+          position:absolute;
+          left: 350px;
+          width: 100%;
+          top: 0px;
+          height: 100%;
+      }
+    </style>
+    <script type="text/javascript">
+      function run(){
+          var left = document.getElementById('iframeleft');
+          var right = document.getElementById('iframeright');
+          left.src = "index.html";
+          right.src = "http://www.yr.no/place/Norway/Oslo/Oslo/Oslo/hour_by_hour.html";
+      };
+    </script>
+  </head>
+  <body onload="run()">
+    <!--<div id="countdown">?</div>-->
+    <iframe id="iframeleft"></iframe>
+    <iframe id="iframeright"></iframe>
+  </body>

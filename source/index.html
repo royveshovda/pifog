@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/mqtt.css" />
+    <script src="js/mqttws31-min.js"></script>
+    <script src="js/mqtt.js"></script>
+    <title>MQTT</title>
+  </head>
+  <body onload="run_main()">
+    <div id="general">
+      <div class="circlelarge" id="redStatus" style="background-color:red;display:none">STOP</div>
+      <div class="circlelarge" id="yellowStatus" style="background-color:yellow;color:black;display:none">MAYBE</div>
+      <div class="circlelarge" id="greenStatus" style="background-color:green;display:none">GOGOGO</div>
+    </div>
+    <h1>State of doors</h1>
+    <div id="doors" class="door">
+      <h2>Doors</h2>
+      <div class="circlesmall" id="circle1">F</div>
+      <div class="circlesmall" id="circle2">M</div>
+    </div>
+    <!--
+    <div id="open">
+      <h1>Front door</h1>
+      <button id="openDoorButton" onclick="open_door()" disabled="true">Open door</button>
+    </div>
+    -->
+    <div id="bottom" class="report">
+      <h2>Reported:</h2>
+      <h3 id=timestampId>?</h3>
+    </div>
+    <img id="imageId" />
+    <div class="connection">
+      <h1>Connections status</h1>
+      <label id="brokerLabel">Broker:</label>
+      <input id="brokerInput">
+      <br />
+      <label id="usernameLabel">Username:</label>
+      <input id="usernameInput">
+      <br />
+      <label id="passwordLabel">Password:</label>
+      <input id="passwordInput" type="password" />
+      <br />
+      <button id="connectButton" onclick="connect()">Connect</button>
+      <button id="disconnectButton" disabled="true" onclick="disconnect()">Disconnect</button>
+    </div>
+  </body>
+</html>
