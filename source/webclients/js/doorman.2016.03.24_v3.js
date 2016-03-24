@@ -1,13 +1,13 @@
-var broker_port = 8083;
-var broker_path = "/mqtt";
 var id = Math.floor((Math.random() * 1000000) + 1);
-var client_name = "web_client_" + id;
-var subscribe_topic_name_toiletpi = "/World/Things/toiletpi/Event";
-var subscribe_topic_name_camerapi = "/World/Things/camerapi/Event";
+var client_name = "web_client_doorman_" + id;
+//var subscribe_topic_name_toiletpi = "/World/Things/toiletpi/Event";
+var subscribe_topic_name_camerapi = "/World/Fog/1/CameraPi/Event";
+var publish_topic_name_buttonpi = "/World/Fog/1/ButtonPi/Command";
+var publish_topic_name_camerapi = "/World/Fog/1/CameraPi/Command";
 
 function onConnect() {
   console.log("onConnect");
-  client.subscribe(subscribe_topic_name_toiletpi);
+  //TODO: Subscribe to event coming back from commands
   client.subscribe(subscribe_topic_name_camerapi);
 
   document.getElementById("brokerSection").style.display = 'none';
@@ -16,6 +16,8 @@ function onConnect() {
   document.getElementById("connectButton").style.display = 'none';
   document.getElementById("disconnectButton").style.display = 'block';
   document.getElementById("openDoorButton").disabled=false;
+  document.getElementById("getSmallPictureButton").disabled=false;
+  document.getElementById("getLargePictureButton").disabled=false;
 }
 
 function set_disconnected_state(){
@@ -26,38 +28,50 @@ function set_disconnected_state(){
   document.getElementById("disconnectButton").style.display = 'none';
 
   document.getElementById("timestampId").innerHTML = "?";
-  var red = document.getElementById('redStatus');
-  var yellow = document.getElementById('yellowStatus');
-  var green = document.getElementById('greenStatus');
-  red.style.display = 'none'
-  yellow.style.display = 'none'
-  green.style.display = 'none'
   document.getElementById("openDoorButton").disabled=true;
+  document.getElementById("getSmallPictureButton").disabled=true;
+  document.getElementById("getLargePictureButton").disabled=true;
 }
 
 function open_door(){
   //TODO: improve the handling of the ID
-  message = new Paho.MQTT.Message('{"command":"open-door","id":"123"}');
-  message.destinationName = "/World/Things/buttonpi/Command";
-  client.send(message);
+  message = '{"command":"open-door","id":"123"}';
+  client.publish(publish_topic_name_buttonpi, message);
 }
 
-function onConnectionLost(responseObject) {
-  if (responseObject.errorCode !== 0) {
-    console.log("onConnectionLost:"+responseObject.errorMessage);
-    set_disconnected_state();
-  }
+function get_picture_small(){
+  //TODO: improve the handling of the ID
+  message = '{"command":"take-picture-low-res","id":"123"}';
+  client.publish(publish_topic_name_camerapi, message);
 }
 
-function onMessageArrived(message) {
-  console.log("onMessageArrived:"+message.payloadString);
-  var report = eval('(' + message.payloadString + ')');
-  if(report.state != undefined){
-    var door1 = report.state.reported.door1;
-    var door2 = report.state.reported.door2;
-    var timestamp = report.state.reported.timestamp;
-    set_general_state(door1, door2);
+function get_picture_large(){
+  //TODO: improve the handling of the ID
+  message = '{"command":"take-picture-high-res","id":"123"}';
+  client.publish(publish_topic_name_camerapi, message);
+}
+
+function onConnectionLost() {
+  set_disconnected_state();
+}
+
+function onMessageArrived(topic, message_raw, packet) {
+  //console.log("onMessageArrived:"+message_raw);
+  if(topic == subscribe_topic_name_camerapi)
+  {
+      var message = eval('(' + message_raw + ')');
+      if(message.picture != undefined){
+        picture = message.picture;
+        document.getElementById("imageId").src= picture.encoding + "," + picture.image;
+      }
   }
+
+  //if(report.state != undefined){
+  //  var door1 = report.state.reported.door1;
+  //  var door2 = report.state.reported.door2;
+  //  var timestamp = report.state.reported.timestamp;
+  //  set_general_state(door1, door2);
+  //}
 
   //data:image/jpeg;base64,
 }
@@ -92,7 +106,7 @@ function run_main(){
 }
 
 function disconnect(){
-  client.disconnect();
+  client.end();
   set_disconnected_state();
 }
 
@@ -105,8 +119,11 @@ function connect(){
     localStorage.setItem("password", password);
     localStorage.setItem("broker_url", broker_url);
   }
-  client = new Paho.MQTT.Client(broker_url, broker_port, broker_path, client_name);
-  client.onConnectionLost = onConnectionLost;
-  client.onMessageArrived = onMessageArrived;
-  client.connect({onSuccess:onConnect, userName:username, password:password});
+  client  = mqtt.connect(broker_url, {"username":username, "password":password, "rejectUnauthorized": false});
+  client.on('message', onMessageArrived);
+  client.on('connect', onConnect);
+  //client.on('close', );
+  //client.on('reconnect', );
+  client.on('offline', onConnectionLost);
+  //client.on('error', );
 }

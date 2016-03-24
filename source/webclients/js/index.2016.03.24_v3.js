@@ -1,14 +1,11 @@
-var broker_port = 8083;
-var broker_path = "/mqtt";
 var id = Math.floor((Math.random() * 1000000) + 1);
-var client_name = "web_client_" + id;
-var subscribe_topic_name_toiletpi = "/World/Things/toiletpi/Event";
-var subscribe_topic_name_camerapi = "/World/Things/camerapi/Event";
+var client_name = "web_client_index_" + id;
+var subscribe_topic_name_doorpi = "/World/Fog/1/DoorPi/Event";
+var subscribe_topic_name_camerapi = "/World/Fog/1/CameraPi/Event";
 
 function onConnect() {
   console.log("onConnect");
-  client.subscribe(subscribe_topic_name_toiletpi);
-  client.subscribe(subscribe_topic_name_camerapi);
+  client.subscribe(subscribe_topic_name_doorpi);
 
   document.getElementById("brokerSection").style.display = 'none';
   document.getElementById("usernameSection").style.display = 'none';
@@ -35,34 +32,22 @@ function set_disconnected_state(){
   green.style.display = 'none'
 }
 
-function open_door(){
-  message = new Paho.MQTT.Message('{"command":"open-door","id":"123"}');
-  message.destinationName = "/World/Things/buttonpi/Command";
-  client.send(message);
-}
-
-/*
-function onConnectionLost(responseObject) {
-  if (responseObject.errorCode !== 0) {
-    console.log("onConnectionLost:"+responseObject.errorMessage);
-    set_disconnected_state();
-  }
-}
-*/
-
 function onConnectionLost() {
   set_disconnected_state();
 }
 
 function onMessageArrived(topic, message, packet) {
   console.log("onMessageArrived:"+message);
-  var report = eval('(' + message + ')');
-  if(report.state != undefined){
-    var door1 = report.state.reported.door1;
-    var door2 = report.state.reported.door2;
-    var timestamp = report.state.reported.timestamp;
-    set_doors_state(door1, door2, timestamp);
-    set_general_state(door1, door2);
+  if(topic == subscribe_topic_name_doorpi)
+  {
+    var report = eval('(' + message + ')');
+    if(report.state != undefined){
+      var door1 = report.state.reported.door1;
+      var door2 = report.state.reported.door2;
+      var timestamp = report.state.reported.timestamp;
+      set_doors_state(door1, door2, timestamp);
+      set_general_state(door1, door2);
+    }
   }
 }
 

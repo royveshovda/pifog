@@ -3,15 +3,16 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/mqtt.css" />
-    <script src="js/mqttws31-min.js"></script>
-    <script src="js/doorman.js"></script>
-    <title>MQTT</title>
+    <script src="js/mqtt.js"></script>
+    <script src="js/doorman.2016.03.24_v3.js"></script>
+    <title>Doorman</title>
   </head>
   <body onload="run_main()">
-    <div id="general">
-      <div class="circlelarge" id="redStatus" style="background-color:red;display:none">STOP</div>
-      <div class="circlelarge" id="yellowStatus" style="background-color:yellow;color:black;display:none">MAYBE</div>
-      <div class="circlelarge" id="greenStatus" style="background-color:green;display:none">GOGOGO</div>
+    <div id="picture">
+      <h1>Who?</h1>
+      <img id="imageId" style="display:block"/>
+      <button id="getSmallPictureButton" onclick="get_picture_small()" disabled="true">Get small picture</button>
+      <button id="getLargePictureButton" onclick="get_picture_large()" disabled="true">Get large picture</button>
     </div>
     <div id="open">
       <h1>Front door</h1>
@@ -21,7 +22,6 @@
       <h2>Last report</h2>
       <h3 id=timestampId>?</h3>
     </div>
-    <img id="imageId" />
     <div class="connection">
       <h1>Connection</h1>
       <div class="inputSection" id="brokerSection">
@@ -37,7 +37,7 @@
         <input id="passwordInput" type="password" />
       </div>
       <button id="connectButton" onclick="connect()">Connect</button>
-      <button id="disconnectButton" onclick="disconnect()">Disconnect</button>
+      <button id="disconnectButton" onclick="disconnect()" disabled="true">Disconnect</button>
     </div>
   </body>
 </html>
