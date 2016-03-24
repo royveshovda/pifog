@@ -41,16 +41,22 @@ function open_door(){
   client.send(message);
 }
 
+/*
 function onConnectionLost(responseObject) {
   if (responseObject.errorCode !== 0) {
     console.log("onConnectionLost:"+responseObject.errorMessage);
     set_disconnected_state();
   }
 }
+*/
 
-function onMessageArrived(message) {
-  console.log("onMessageArrived:"+message.payloadString);
-  var report = eval('(' + message.payloadString + ')');
+function onConnectionLost() {
+  set_disconnected_state();
+}
+
+function onMessageArrived(topic, message, packet) {
+  console.log("onMessageArrived:"+message);
+  var report = eval('(' + message + ')');
   if(report.state != undefined){
     var door1 = report.state.reported.door1;
     var door2 = report.state.reported.door2;
@@ -108,7 +114,7 @@ function run_main(){
 }
 
 function disconnect(){
-  client.disconnect();
+  client.end();
   set_disconnected_state();
 }
 
@@ -121,8 +127,11 @@ function connect(){
     localStorage.setItem("password", password);
     localStorage.setItem("broker_url", broker_url);
   }
-  client = new Paho.MQTT.Client(broker_url, broker_port, broker_path, client_name);
-  client.onConnectionLost = onConnectionLost;
-  client.onMessageArrived = onMessageArrived;
-  client.connect({onSuccess:onConnect, userName:username, password:password});
+  client  = mqtt.connect(broker_url, {"username":username, "password":password, "rejectUnauthorized": false});
+  client.on('message', onMessageArrived);
+  client.on('connect', onConnect);
+  //client.on('close', );
+  //client.on('reconnect', );
+  client.on('offline', onConnectionLost);
+  //client.on('error', );
 }
