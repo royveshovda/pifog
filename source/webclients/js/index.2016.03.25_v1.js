@@ -42,9 +42,9 @@ function onMessageArrived(topic, message, packet) {
   {
     var report = eval('(' + message + ')');
     if(report.state != undefined){
-      var door1 = report.state.reported.door1;
-      var door2 = report.state.reported.door2;
-      var timestamp = report.state.reported.timestamp;
+      var door1 = report.state.door1;
+      var door2 = report.state.door2;
+      var timestamp = report.state.timestamp;
       set_doors_state(door1, door2, timestamp);
       set_general_state(door1, door2);
     }
