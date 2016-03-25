@@ -6,6 +6,7 @@ from datetime import datetime
 from shared import common
 
 handler = None
+send_interval = 60 # in seconds
 
 
 def init():
@@ -66,7 +67,19 @@ def handle_notification(message):
     print("Notification received: " + str(message.payload))
 
 
-# This is called when we receive a subscription notification from Broker.
+def send_sensor_data(client):
+    payload = json.dumps({
+        "state": {
+            "humidity": handler.get_humidity(),
+            "temperature_from_humidity": handler.get_temperature_from_humidity(),
+            "temperature_from_pressure": handler.get_temperature_from_pressure(),
+            "pressure": handler.get_pressure(),
+            "timestamp": str(datetime.now())
+        }
+    })
+    client.publish(settings.topic_statuspi_event, payload, qos=1, retain=True)
+
+
 def on_message(client, userdata, msg):
     if msg.topic == settings.topic_statuspi_command:
         handle_command(client, msg)
@@ -87,8 +100,9 @@ def start():
 
     try:
         while True:
+            send_sensor_data(client)
             # TODO: Read sonsor-data on regular intervals and send
-            time.sleep(60)
+            time.sleep(send_interval)
     except KeyboardInterrupt:
         client.loop_stop()
         handler.display_blank()

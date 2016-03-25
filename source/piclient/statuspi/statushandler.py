@@ -94,3 +94,19 @@ def display_go():
 def display_stop():
     m = generate_matrix_cross(RED, BLACK)
     display(m)
+
+
+def get_humidity():
+    return sense.get_humidity()
+
+
+def get_temperature_from_humidity():
+    return sense.get_temperature_from_humidity()
+
+
+def get_temperature_from_pressure():
+    return sense.get_temperature_from_pressure()
+
+
+def get_pressure():
+    return sense.get_pressure()

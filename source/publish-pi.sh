@@ -1,7 +1,7 @@
 #!/bin/bash
 rm -Rf staging
-rm staging.zip
-cp -R pi_client staging
+rm -f staging.zip
+cp -R piclient staging
 rm -Rf staging/__pycache__/
 rm staging/*dummy*
 mv staging/settings.yaml staging/settings.template.yaml

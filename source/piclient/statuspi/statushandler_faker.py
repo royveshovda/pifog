@@ -20,3 +20,19 @@ def display_stop():
 
 def display_unknown():
     print('QUESTION')
+
+
+def get_humidity():
+    return 0.1
+
+
+def get_temperature_from_humidity():
+    return 1.1
+
+
+def get_temperature_from_pressure():
+    return 2.1
+
+
+def get_pressure():
+    return 3.1
