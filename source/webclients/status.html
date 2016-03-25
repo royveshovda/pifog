@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/mqtt.css" />
+    <script src="js/mqtt.js"></script>
+    <script src="js/status.2016.03.25_v1.js"></script>
+    <title>Toilet Status</title>
+  </head>
+  <body onload="run_main()">
+    <div id="general">
+      <h1>Have to go?</h1>
+      <div class="circlelarge" id="redStatus" style="background-color:red;display:none">I think not</div>
+      <div class="circlelarge" id="yellowStatus" style="background-color:yellow;color:black;display:none">MAYBE</div>
+      <div class="circlelarge" id="greenStatus" style="background-color:green;display:none">GOGOGO</div>
+    </div>
+    <div id="doors" class="door">
+      <h2>Doors</h2>
+      <div class="circlesmall" id="circle1">F</div>
+      <div class="circlesmall" id="circle2">M</div>
+    </div>
+    <div id="bottom" class="report">
+      <h2>Last report</h2>
+      <h3 id=timestampId>?</h3>
+    </div>
+    <div class="connection">
+      <h1>Connection</h1>
+      <div class="inputSection" id="brokerSection">
+        <label id="brokerLabel">Broker:</label>
+        <input id="brokerInput">
+      </div>
+      <div class="inputSection" id="usernameSection">
+        <label id="usernameLabel">Username:</label>
+        <input id="usernameInput">
+      </div>
+      <div class="inputSection" id="passwordSection">
+        <label id="passwordLabel">Password:</label>
+        <input id="passwordInput" type="password" />
+      </div>
+      <button id="connectButton" onclick="connect()">Connect</button>
+      <button id="disconnectButton" onclick="disconnect()">Disconnect</button>
+    </div>
+  </body>
+</html>
