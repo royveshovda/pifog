@@ -1,0 +1,14 @@
+[Unit]
+Description=PiFog Service
+After=multi-user.target
+Requires=network-online.target
+
+[Service]
+Type=idle
+Restart=always
+WorkingDirectory=/home/pi/pifog/
+ExecStart=/usr/bin/python3 start.py settings.yaml > activity.log 2>&1
+ExecStop=/usr/bin/python3 stop.py
+
+[Install]
+WantedBy=multi-user.target

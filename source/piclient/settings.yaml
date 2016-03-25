@@ -1,0 +1,6 @@
+broker_endpoint: "<endpoint outside aws>"
+broker_username: "<username to broker>"
+broker_password: "<password to broker>"
+ca_certificate: "<full path to ca certificate>"
+device_type: "<type of hardware>"
+run_type: "fake"

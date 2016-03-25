@@ -1,0 +1,4 @@
+fogpi-1-001: doorpi
+fogpi-1-002: statuspi
+fogpi-1-003: camerapi
+fogpi-1-004: buttonpi
