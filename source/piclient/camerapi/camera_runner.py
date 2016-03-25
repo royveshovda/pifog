@@ -105,12 +105,14 @@ def on_message(client, userdata, msg):
 
 
 def start():
+    handler.init()
     client = common.setup_mqtt(on_connect, on_message, settings.topic_camerapi_connection)
 
     try:
         while True:
             time.sleep(60)
     except KeyboardInterrupt:
+        handler.deinit()
         client.loop_stop()
         print('stopped')
 
