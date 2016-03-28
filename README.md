@@ -13,6 +13,8 @@ They communicate using the MQTT's builtin pub-sub. The structure of the MQTT top
 
 For now the code on the Pis are written in Python. This might change as the plan includes experimenting using different languages as well. Elixir happen to be high on that candidate list.
 
+![Overview](/Overview.png)
+
 ## DoorPi
 The DoorPi is monitoring two toilet doors and publishing events when the state changes for any of them.
 This is not the most accurate method of measuring occupancy, but will have to do in our case.
