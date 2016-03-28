@@ -51,3 +51,6 @@ Very simple web client using nothing but HTML and javascript.
 - Slack: Notification when someone is at the door
 - Slack: Command to actually open the door
 - WebClient: Now we use login to the MQTT-broker. To scale we need to be able to log in more users.
+- Pi-software in different languages
+- Document the topics and message schemas
+- Protobuf (maybe in combination with JSON)
