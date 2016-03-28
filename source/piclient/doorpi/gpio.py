@@ -4,8 +4,10 @@ import time
 
 def setup(pin1, pin2, pin1_led, pin2_led):
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(pin1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.setup(pin2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    # GPIO.setup(pin1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    # GPIO.setup(pin2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(pin1, GPIO.IN)
+    GPIO.setup(pin2, GPIO.IN)
     GPIO.setup(pin1_led, GPIO.OUT)
     GPIO.setup(pin2_led, GPIO.OUT)
     GPIO.output(pin1_led, False)

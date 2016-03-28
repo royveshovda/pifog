@@ -58,16 +58,16 @@ def on_message(client, userdata, msg):
     print("Spam received: " + str(msg.payload))
 
 
-def send_data(client, door1_open, door2_open):
-    if door1_open:
-        door1_message = "open"
-    else:
+def send_data(client, door1_closed, door2_closed):
+    if door1_closed:
         door1_message = "closed"
-
-    if door2_open:
-        door2_message = "open"
     else:
+        door1_message = "open"
+
+    if door2_closed:
         door2_message = "closed"
+    else:
+        door2_message = "open"
 
     # Prepare our sensor data in JSON format.
     payload = json.dumps({
@@ -94,8 +94,8 @@ def new_state(pin, old_state):
 
 
 def set_led_state(door1_state, door2_state):
-    handler.set_state(pin_door1_led, not door1_state)
-    handler.set_state(pin_door2_led, not door2_state)
+    handler.set_state(pin_door1_led, door1_state)
+    handler.set_state(pin_door2_led, door2_state)
 
 
 def start():
