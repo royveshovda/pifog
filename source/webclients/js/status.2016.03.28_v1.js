@@ -2,10 +2,17 @@ var id = Math.floor((Math.random() * 1000000) + 1);
 var client_name = "web_client_index_" + id;
 var subscribe_topic_name_doorpi = "/World/Fog/1/DoorPi/Event";
 var subscribe_topic_name_camerapi = "/World/Fog/1/CameraPi/Event";
+var subscribe_topic_name_doorpi_connection = "/World/Fog/1/DoorPi/Connection";
+var general_doorpi_online = false;
+var general_door_state_1 = "unknown";
+var general_door_state_2 = "unknown";
+var general_timestamp = "";
+var general_comment = "not connected";
 
 function onConnect() {
   console.log("onConnect");
   client.subscribe(subscribe_topic_name_doorpi);
+  client.subscribe(subscribe_topic_name_doorpi_connection);
 
   document.getElementById("brokerSection").style.display = 'none';
   document.getElementById("usernameSection").style.display = 'none';
@@ -20,34 +27,57 @@ function set_disconnected_state(){
   document.getElementById("passwordSection").style.display = 'block';
   document.getElementById("connectButton").style.display = 'block';
   document.getElementById("disconnectButton").style.display = 'none';
+  set_unknown_state();
+}
 
+function set_unknown_state(){
   document.getElementById("circle1").style.backgroundColor = 'black';
   document.getElementById("circle2").style.backgroundColor = 'black';
-  document.getElementById("timestampId").innerHTML = "?";
+  document.getElementById("timestampId").innerHTML = general_comment;
   var red = document.getElementById('redStatus');
   var yellow = document.getElementById('yellowStatus');
   var green = document.getElementById('greenStatus');
-  red.style.display = 'none'
-  yellow.style.display = 'none'
-  green.style.display = 'none'
+  red.style.display = 'none';
+  yellow.style.display = 'none';
+  green.style.display = 'none';
 }
 
 function onConnectionLost() {
   set_disconnected_state();
 }
 
-function onMessageArrived(topic, message, packet) {
-  console.log("onMessageArrived:"+message);
+function onMessageArrived(topic, message_raw, packet) {
+  console.log("onMessageArrived:"+message_raw);
+  var message = eval('(' + message_raw + ')');
   if(topic == subscribe_topic_name_doorpi)
   {
-    var report = eval('(' + message + ')');
-    if(report.state != undefined){
-      var door1 = report.state.door1;
-      var door2 = report.state.door2;
-      var timestamp = report.state.timestamp;
-      set_doors_state(door1, door2, timestamp);
-      set_general_state(door1, door2);
+    if( message.state != undefined){
+      general_door_state_1 =  message.state.door1;
+      general_door_state_2 =  message.state.door2;
+      general_timestamp =  message.state.timestamp;
     }
+  }else{
+    if(topic == subscribe_topic_name_doorpi_connection){
+      if(message.connected != undefined){
+        general_doorpi_online = true;
+      }else if (message.disconnected != undefined) {
+        general_doorpi_online = false;
+        general_comment = "DoorPi is not connected";
+      }
+    }
+  }
+  /*elseif(topic == subscribe_topic_name_doorpi_connection){
+
+  }*/
+  show_state();
+}
+
+function show_state(){
+  if(general_doorpi_online){
+    set_doors_state(general_door_state_1, general_door_state_2, general_timestamp);
+    set_general_state(general_door_state_1, general_door_state_2);
+  }else{
+    set_unknown_state();
   }
 }
 
