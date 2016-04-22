@@ -28,6 +28,10 @@ topic_buttonpi_command = "/World/Fog/1/ButtonPi/Command"
 topic_buttonpi_event = "/World/Fog/1/ButtonPi/Event"
 topic_buttonpi_connection = "/World/Fog/1/ButtonPi/Connection"
 
+topic_sensorpi_notify = "/World/Fog/1/SensorPi/Notify"
+topic_sensorpi_command = "/World/Fog/1/SensorPi/Command"
+topic_sensorpi_event = "/World/Fog/1/SensorPi/Event"
+topic_sensorpi_connection = "/World/Fog/1/SensorPi/Connection"
 
 def load_settings(filename):
     stream = open(filename, 'r')

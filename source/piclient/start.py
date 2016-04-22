@@ -27,8 +27,12 @@ def get_runner(device_type):
                     from buttonpi import button_runner
                     return button_runner
                 else:
-                    print('Device_Type muse be set')
-                    return None
+                    if device_type == "sensor":
+                        from sensorpi import sensor_runner
+                        return sensor_runner
+                    else:
+                        print('Device_Type muse be set')
+                        return None
 
 
 if __name__ == "__main__":
