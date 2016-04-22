@@ -71,7 +71,7 @@ def send_data(client, co2, temperature, humidity, loudness):
 def start():
     client = common.setup_mqtt(on_connect, on_message, settings.topic_sensorpi_connection)
     handler.setup(dht_sensor_pin, loudness_sensor_pin)
-    d1 = datetime.now()
+    d1 = datetime.min
 
     try:
         while True:

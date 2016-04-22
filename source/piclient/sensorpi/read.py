@@ -52,7 +52,7 @@ def show_data(co2, temperature, humidity, loudness, timestamp):
     sensorpi.grove_oled.oled_setTextXY(2, 0)
     sensorpi.grove_oled.oled_putString("Temp: " + temperature_message)
     sensorpi.grove_oled.oled_setTextXY(4, 0)
-    sensorpi.grove_oled.oled_putString("CO2:" + co2_message + "ppm")
+    sensorpi.grove_oled.oled_putString("CO2:" + co2_message + "ppm ")
     sensorpi.grove_oled.oled_setTextXY(7, 0)
     sensorpi.grove_oled.oled_putString("Humi: " + humidity_message)
     sensorpi.grove_oled.oled_setTextXY(9, 0)
