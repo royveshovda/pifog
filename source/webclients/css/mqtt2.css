@@ -1,0 +1,39 @@
+input{
+			border:1px solid black;
+		}
+		input:focus{
+			background-color: #E6E6E6;
+		}
+		fieldset{
+			margin-bottom: 4%;
+		}
+.circlesmall{
+	width:80px;
+	height:80px;
+	border-radius:40px;
+	font-size:55px;
+	color:#fff;
+	line-height:80px;
+	text-align:center;
+	background:#000;
+	display: inline-block;
+}
+
+.circlelarge{
+	width:200px;
+	height:200px;
+	border-radius:110px;
+	font-size:40px;
+	color:#fff;
+	line-height:200px;
+	text-align:center;
+	background:#000
+}
+
+.value-report{
+	margin: 5px;
+}
+
+.label{
+	font-weight: bold;
+}
