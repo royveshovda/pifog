@@ -1,5 +1,6 @@
 defmodule Doorpi.MqttWorker do
   use GenServer
+  require Logger
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
@@ -19,12 +20,14 @@ defmodule Doorpi.MqttWorker do
     topic_notify = "/World/Fog/1/#{pi_name}/Notify"
 
     ssl = [cacertfile: Path.join(:code.priv_dir(:doorpi), cacert_name)]
+    will_payload = Poison.encode!(%{disconnected: %{device: pi_name}})
     {:ok, pid} = :emqttc.start_link([host: host,
                                      port: port,
                                      username: un,
                                      password: pw,
                                      ssl: ssl, reconnect: {3, 120, 10},
-                                     auto_resub: true])
+                                     auto_resub: true,
+                                     will: [qos: 1, reatin: true, topic: topic_connection, payload: will_payload]])
     #Process.send_after(self(), :heart_beat, 500)
     state = %{pid: pid,
               pi_name: pi_name,
@@ -38,16 +41,13 @@ defmodule Doorpi.MqttWorker do
   end
 
   def handle_cast({:send_event, payload}, state) do
-    IO.puts "Will publish"
     :emqttc.publish(state.pid, state.topic_event, payload, [qos: 1, retain: true])
     {:noreply, state}
   end
 
   def handle_info({:mqttc, pid, :connected}, state) do
-    IO.puts "Connected"
-
-    #TODO: Send connected
-    IO.puts "Subscribint to #{state.topic_command}"
+    send_connected(pid, state.topic_connection)
+    Logger.debug("Subscribing to #{state.topic_command}")
 
     :emqttc.subscribe(pid, state.topic_notify, 1)
     :emqttc.subscribe(pid, state.topic_command, 1)
@@ -56,7 +56,7 @@ defmodule Doorpi.MqttWorker do
   end
 
   def handle_info({:mqttc, _pid, :disconnected}, state) do
-    IO.puts "Disconnected"
+    Logger.warn("Disconnected")
     {:noreply,state}
   end
 
@@ -67,15 +67,12 @@ defmodule Doorpi.MqttWorker do
   end
 
   def handle_info({:publish, topic_notify, payload}, state = %{topic_notify: topic_notify}) do
-    IO.puts "Received notification:"
-    IO.inspect payload
+    Logger.info("Received notofication: #{inspect payload}")
     {:noreply, state}
   end
 
   def handle_info({:publish, unknown_topic, payload}, state) do
-    IO.puts "Received:"
-    IO.inspect unknown_topic
-    IO.inspect payload
+    Logger.info("Received unknown topic(#{unknown_topic}): #{inspect payload}")
     {:noreply, state}
   end
 
@@ -89,16 +86,22 @@ defmodule Doorpi.MqttWorker do
   end
 
   defp handle_command("ping", id, pid, topic_event) do
-
     timestamp = DateTime.utc_now |> DateTime.to_string
     msg = %{pong: %{id: id, timestamp: timestamp}}
     msg_raw = Poison.encode!(msg)
-    IO.puts msg_raw
-    IO.puts topic_event
     :emqttc.publish(pid, topic_event, msg_raw)
   end
 
   defp handle_command(unknown_command, _id, _pid, _topic_event) do
-    IO.puts "Unknown command: #{unknown_command}"
+    Logger.warn("Unknown command: #{unknown_command}")
+  end
+
+  defp send_connected(pid, topic_connection) do
+    timestamp = DateTime.utc_now |> DateTime.to_string
+    boot_time = "unknown" # TODO: Try to get boot time
+    addresses = "TODO" # TODO: Try to get IP-addresses
+    msg = %{connected: %{boot_time: boot_time, addresses: addresses, timestamp: timestamp}}
+    payload = Poison.encode!(msg)
+    :emqttc.publish(pid, topic_connection, payload, [qos: 1, retain: true])
   end
 end
