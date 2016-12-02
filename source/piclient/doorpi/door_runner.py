@@ -20,10 +20,10 @@ def init():
     return
 
 
-pin_door1 = 11
-pin_door2 = 12
-pin_door1_led = 13
-pin_door2_led = 15
+pin_door1 = 11 #BCM17
+pin_door2 = 12 # BCM18
+pin_door1_led = 13 # BCM27
+pin_door2_led = 15 # BCM22
 
 
 def on_connect(client, userdata, flags, rc):

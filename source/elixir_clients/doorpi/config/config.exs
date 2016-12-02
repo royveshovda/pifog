@@ -9,15 +9,21 @@ use Mix.Config
 # of this file so it overrides the configuration defined above.
 # Uncomment to use target specific configurations
 
+config :nerves, :firmware,
+  rootfs_additions: "rootfs-additions"
+
+config :nerves_interim_wifi,
+  regulatory_domain: "NO"
+
 # config :doorpi, :mqtt,
 #   host: 'hostname',
 #   port: 8883,
 #   username: "un",
 #   password: "pw"
 
-config :doorpi, :wlan0,
- ssid: "Nerves",
- psk: "GoGoNerves12"
+# config :doorpi, :wlan0,
+#  ssid: "??",
+#  psk: "??"
 
 
 

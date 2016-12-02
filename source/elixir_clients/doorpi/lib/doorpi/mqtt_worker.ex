@@ -28,15 +28,12 @@ defmodule Doorpi.MqttWorker do
                                      ssl: ssl, reconnect: {3, 120, 10},
                                      auto_resub: true,
                                      will: [qos: 1, reatin: true, topic: topic_connection, payload: will_payload]])
-    #Process.send_after(self(), :heart_beat, 500)
     state = %{pid: pid,
               pi_name: pi_name,
               topic_event: topic_event,
               topic_connection: topic_connection,
               topic_command: topic_command,
               topic_notify: topic_notify}
-
-    # TODO: Last will
     {:ok, state}
   end
 
@@ -74,15 +71,6 @@ defmodule Doorpi.MqttWorker do
   def handle_info({:publish, unknown_topic, payload}, state) do
     Logger.info("Received unknown topic(#{unknown_topic}): #{inspect payload}")
     {:noreply, state}
-  end
-
-  def handle_info(:heart_beat, [pid]) do
-    timestamp = DateTime.utc_now |> DateTime.to_string
-    msg = %{state: %{door1: "open", door2: "closed", timestamp: timestamp}}
-    msg_raw = Poison.encode!(msg)
-    :emqttc.publish(pid, "/World/Fog/1/DoorPi/Event", msg_raw, [qos: 1, retain: true])
-    Process.send_after(self(), :heart_beat, 5000)
-    {:noreply, [pid]}
   end
 
   defp handle_command("ping", id, pid, topic_event) do

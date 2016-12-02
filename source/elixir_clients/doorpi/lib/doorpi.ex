@@ -1,5 +1,6 @@
 defmodule Doorpi do
   use Application
+  alias Nerves.InterimWiFi, as: WiFi
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -15,7 +16,9 @@ defmodule Doorpi do
                    passeord: mqtt[:password],
                    cacert: "cacert.pem"}
     children = [
+      worker(Task, [fn -> network end], restart: :transient),
       worker(Doorpi.MqttWorker, [parameters]),
+      worker(Doorpi.GpioWorker, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
