@@ -9,4 +9,18 @@ use Mix.Config
 # of this file so it overrides the configuration defined above.
 # Uncomment to use target specific configurations
 
+# config :doorpi, :mqtt,
+#   host: 'hostname',
+#   port: 8883,
+#   username: "un",
+#   password: "pw"
+
+config :doorpi, :wlan0,
+ ssid: "Nerves",
+ psk: "GoGoNerves12"
+
+
+
+import_config "config.secret.exs"
+
 # import_config "#{Mix.Project.config[:target]}.exs"

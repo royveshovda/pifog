@@ -7,14 +7,26 @@ defmodule Doorpi do
     import Supervisor.Spec, warn: false
 
     # Define workers and child supervisors to be supervised
+    mqtt = Application.get_env(:doorpi, :mqtt)
+    parameters = %{pi_name: "DoorPiEx",
+                   host: mqtt[:host],
+                   port: mqtt[:port],
+                   username: mqtt[:username],
+                   passeord: mqtt[:password],
+                   cacert: "cacert.pem"}
     children = [
-      worker(Doorpi.MqttWorker, []),
+      worker(Doorpi.MqttWorker, [parameters]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Doorpi.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  def network do
+    wlan_config = Application.get_env(:doorpi, :wlan0)
+    WiFi.setup "wlan0", wlan_config
   end
 
 end
