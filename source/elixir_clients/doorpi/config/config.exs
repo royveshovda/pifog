@@ -12,8 +12,7 @@ use Mix.Config
 config :nerves, :firmware,
   rootfs_additions: "rootfs-additions"
 
-config :nerves_interim_wifi,
-  regulatory_domain: "NO"
+config :logger, level: :warn
 
 # config :doorpi, :mqtt,
 #   host: 'hostname',

@@ -7,8 +7,7 @@ defmodule Doorpi.MqttWorker do
   end
 
   def send_door_state(door1, door2) do
-    timestamp = DateTime.utc_now |> DateTime.to_string
-    msg = %{state: %{door1: door1, door2: door2, timestamp: timestamp}}
+    msg = %{state: %{door1: door1, door2: door2, timestamp: get_timestamp_as_string()}}
     msg_raw = Poison.encode!(msg)
     GenServer.cast(__MODULE__, {:send_event, msg_raw})
   end
@@ -74,8 +73,7 @@ defmodule Doorpi.MqttWorker do
   end
 
   defp handle_command("ping", id, pid, topic_event) do
-    timestamp = DateTime.utc_now |> DateTime.to_string
-    msg = %{pong: %{id: id, timestamp: timestamp}}
+    msg = %{pong: %{id: id, timestamp: get_timestamp_as_string()}}
     msg_raw = Poison.encode!(msg)
     :emqttc.publish(pid, topic_event, msg_raw)
   end
@@ -85,11 +83,17 @@ defmodule Doorpi.MqttWorker do
   end
 
   defp send_connected(pid, topic_connection) do
-    timestamp = DateTime.utc_now |> DateTime.to_string
     boot_time = "unknown" # TODO: Try to get boot time
-    addresses = "TODO" # TODO: Try to get IP-addresses
-    msg = %{connected: %{boot_time: boot_time, addresses: addresses, timestamp: timestamp}}
+    msg = %{connected: %{boot_time: boot_time, addresses: get_ip_address(), timestamp: get_timestamp_as_string()}}
     payload = Poison.encode!(msg)
     :emqttc.publish(pid, topic_connection, payload, [qos: 1, retain: true])
+  end
+
+  defp get_ip_address do
+    :inet.getif() |> elem(1) |> hd() |> elem(0) |> Tuple.to_list |> Enum.join(".")
+  end
+
+  defp get_timestamp_as_string do
+    DateTime.utc_now |> DateTime.to_string
   end
 end

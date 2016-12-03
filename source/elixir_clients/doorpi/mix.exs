@@ -41,7 +41,8 @@ defmodule Doorpi.Mixfile do
       {:relx, "~> 3.21", override: true},
       {:erlware_commons, "~> 0.21.0", override: true},
       {:nerves_interim_wifi, "~> 0.1.0"},
-      {:nerves_ntp, "~> 0.1"},
+      #{:nerves_ntp, "~> 0.1"},
+      {:nerves_ntp, git: "https://github.com/evokly/nerves_ntp.git"}
     ]
   end
 
