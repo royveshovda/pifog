@@ -24,9 +24,11 @@ defmodule Doorpi.MqttWorker do
                                      port: port,
                                      username: un,
                                      password: pw,
-                                     ssl: ssl, reconnect: {3, 120, 10},
+                                     ssl: ssl,
+                                     reconnect: {3, 120, 10},
                                      auto_resub: true,
-                                     will: [qos: 1, reatin: true, topic: topic_connection, payload: will_payload]])
+                                     logger: :error,
+                                     will: [qos: 1, retain: true, topic: topic_connection, payload: will_payload]])
     state = %{pid: pid,
               pi_name: pi_name,
               topic_event: topic_event,
