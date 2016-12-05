@@ -31,5 +31,4 @@ defmodule Doorpi do
     wlan_config = Application.get_env(:doorpi, :wlan0)
     WiFi.setup "wlan0", wlan_config
   end
-
 end
