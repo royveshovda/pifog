@@ -16,9 +16,9 @@ defmodule Doorpi do
                    passeord: mqtt[:password],
                    cacert: "cacert.pem"}
     children = [
-      worker(Task, [fn -> network end], restart: :transient),
+      #worker(Task, [fn -> network end], restart: :transient),
       worker(Doorpi.MqttWorker, [parameters]),
-      worker(Doorpi.GpioWorker, []),
+      #worker(Doorpi.GpioWorker, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
