@@ -9,7 +9,7 @@ defmodule Doorpi do
 
     # Define workers and child supervisors to be supervised
     mqtt = Application.get_env(:doorpi, :mqtt)
-    parameters = %{pi_name: "DoorPiEx",
+    parameters = %{pi_name: "DoorPi",
                    host: mqtt[:host],
                    port: mqtt[:port],
                    username: mqtt[:username],
