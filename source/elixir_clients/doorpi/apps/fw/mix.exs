@@ -34,6 +34,11 @@ defmodule Fw.Mixfile do
       {:nerves_interim_wifi, "~> 0.1.0"},
       #{:nerves_ntp, "~> 0.1"},
       {:nerves_ntp, git: "https://github.com/evokly/nerves_ntp.git"},
+      {:getopt, "~> 0.8.2", override: true},
+
+      {:logic, in_umbrella: true},
+      {:hw, in_umbrella: true},
+
       {:relx, "~> 3.21", override: true},
       {:erlware_commons, "~> 0.21.0", override: true}
     ]

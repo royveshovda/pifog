@@ -18,7 +18,11 @@ defmodule Logic.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger],
+    [applications: [
+                    :logger,
+                    :ssl,
+                    :poison,
+                    :emqttc],
      mod: {Logic, []}]
   end
 
@@ -37,7 +41,8 @@ defmodule Logic.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:emqttc, git: "https://github.com/emqtt/emqttc.git"}
+      {:emqttc, git: "https://github.com/emqtt/emqttc.git"},
+      {:poison, "~> 3.0"}
     ]
   end
 end

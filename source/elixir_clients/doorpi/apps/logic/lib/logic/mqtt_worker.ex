@@ -18,7 +18,7 @@ defmodule Logic.MqttWorker do
     topic_command = "/World/Fog/1/#{pi_name}/Command"
     topic_notify = "/World/Fog/1/#{pi_name}/Notify"
 
-    ssl = [cacertfile: Path.join(:code.priv_dir(:doorpi), cacert_name)]
+    ssl = [cacertfile: Path.join(:code.priv_dir(:logic), cacert_name)]
     will_payload = Poison.encode!(%{disconnected: %{device: pi_name}})
     {:ok, pid} = :emqttc.start_link([host: host,
                                      port: port,

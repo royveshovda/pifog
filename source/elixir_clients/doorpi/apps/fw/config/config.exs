@@ -10,3 +10,5 @@ use Mix.Config
 # Uncomment to use target specific configurations
 
 # import_config "#{Mix.Project.config[:target]}.exs"
+
+import_config "config.secret.exs"
