@@ -42,28 +42,28 @@ defmodule Hw.GpioWorker do
   def handle_info({:gpio_interrupt, @pin_door1, :falling}, state) do
     new_state = %{state | door1: :open}
     set_door_state(new_state.door1, new_state.door2, new_state.led1, new_state.led2)
-    Doorpi.MqttWorker.send_door_state(new_state.door1, new_state.door2)
+    Logic.MqttWorker.send_door_state(new_state.door1, new_state.door2)
     {:noreply, new_state}
   end
 
   def handle_info({:gpio_interrupt, @pin_door1, :rising}, state) do
     new_state = %{state | door1: :closed}
     set_door_state(new_state.door1, new_state.door2, new_state.led1, new_state.led2)
-    Doorpi.MqttWorker.send_door_state(new_state.door1, new_state.door2)
+    Logic.MqttWorker.send_door_state(new_state.door1, new_state.door2)
     {:noreply, new_state}
   end
 
   def handle_info({:gpio_interrupt, @pin_door2, :falling}, state) do
     new_state = %{state | door2: :open}
     set_door_state(new_state.door1, new_state.door2, new_state.led1, new_state.led2)
-    Doorpi.MqttWorker.send_door_state(new_state.door1, new_state.door2)
+    Logic.MqttWorker.send_door_state(new_state.door1, new_state.door2)
     {:noreply, new_state}
   end
 
   def handle_info({:gpio_interrupt, @pin_door2, :rising}, state) do
     new_state = %{state | door2: :closed}
     set_door_state(new_state.door1, new_state.door2, new_state.led1, new_state.led2)
-    Doorpi.MqttWorker.send_door_state(new_state.door1, new_state.door2)
+    Logic.MqttWorker.send_door_state(new_state.door1, new_state.door2)
     {:noreply, new_state}
   end
 
