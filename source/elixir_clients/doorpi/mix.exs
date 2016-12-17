@@ -7,7 +7,7 @@ defmodule Doorpi.Mixfile do
     [app: :doorpi,
      version: "0.0.1",
      target: @target,
-     archives: [nerves_bootstrap: "~> 0.1.4"],
+     archives: [nerves_bootstrap: "~> 0.2.1"],
      deps_path: "deps/#{@target}",
      build_path: "_build/#{@target}",
      build_embedded: Mix.env == :prod,

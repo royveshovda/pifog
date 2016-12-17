@@ -9,6 +9,9 @@ use Mix.Config
 # of this file so it overrides the configuration defined above.
 # Uncomment to use target specific configurations
 
+config :doorpi,
+  name: "DoorPiEx"
+
 config :nerves, :firmware,
   rootfs_additions: "rootfs-additions"
 

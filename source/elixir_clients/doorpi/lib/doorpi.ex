@@ -9,16 +9,17 @@ defmodule Doorpi do
 
     # Define workers and child supervisors to be supervised
     mqtt = Application.get_env(:doorpi, :mqtt)
-    parameters = %{pi_name: "DoorPi",
+    pi_name = Application.get_env(:doorpi, :name)
+    parameters = %{pi_name: pi_name,
                    host: mqtt[:host],
                    port: mqtt[:port],
                    username: mqtt[:username],
                    passeord: mqtt[:password],
                    cacert: "cacert.pem"}
     children = [
-      #worker(Task, [fn -> network end], restart: :transient),
+      worker(Task, [fn -> network end], restart: :transient),
       worker(Doorpi.MqttWorker, [parameters]),
-      #worker(Doorpi.GpioWorker, []),
+      worker(Doorpi.GpioWorker, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
