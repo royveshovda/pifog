@@ -13,7 +13,7 @@ defmodule Hw.GpioWorker do
     GenServer.cast(__MODULE__, {:set_led2, value})
   end
 
-  def init([pins]) do
+  def init(pins) do
     {:ok, led1} = Gpio.start_link(pins.pin_led1, :output)
     {:ok, led2} = Gpio.start_link(pins.pin_led2, :output)
     signal_startup(led1, led2)
