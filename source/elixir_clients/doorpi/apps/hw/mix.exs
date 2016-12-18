@@ -25,6 +25,7 @@ defmodule Hw.Mixfile do
   defp deps do
     [
       {:elixir_ale, "~> 0.5.6"},
+      {:distillery, "~> 1.0"},
       {:logic, in_umbrella: true}
     ]
   end

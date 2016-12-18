@@ -1,10 +1,7 @@
 defmodule Hw.GpioWorker do
   use GenServer
 
-  @pin_door1 17
-  @pin_door2 18
-
-  def start_link(opts \\ []) do
+  def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
@@ -16,17 +13,28 @@ defmodule Hw.GpioWorker do
     GenServer.cast(__MODULE__, {:set_led2, value})
   end
 
-  def init([]) do
-    {:ok, led1} = Gpio.start_link(27, :output)
-    {:ok, led2} = Gpio.start_link(22, :output)
+  def init([pin_door1, pin_door2, pin_led1, pin_led2]) do
+    {:ok, led1} = Gpio.start_link(pin_led1, :output)
+    {:ok, led2} = Gpio.start_link(pin_led2, :output)
     signal_startup(led1, led2)
 
-    {:ok, door1} = Gpio.start_link(@pin_door1, :input)
-    {:ok, door2} = Gpio.start_link(@pin_door2, :input)
+    {:ok, door1} = Gpio.start_link(pin_door1, :input)
+    {:ok, door2} = Gpio.start_link(pin_door2, :input)
     :ok = Gpio.set_int(door1, :both)
     :ok = Gpio.set_int(door2, :both)
 
-    {:ok, %{led1: led1, led2: led2, door1: :open, door2: :open}}
+    state = %{
+                led1: led1,
+                led2: led2,
+                door1: :open,
+                door2: :open,
+                pin_door1: pin_door1,
+                pin_door2: pin_door2,
+                pin_led1: pin_led1,
+                pin_led2: pin_led2
+              }
+
+    {:ok, state}
   end
 
   def handle_cast({:set_led1, value}, state) do
@@ -39,28 +47,28 @@ defmodule Hw.GpioWorker do
     {:noreply, state}
   end
 
-  def handle_info({:gpio_interrupt, @pin_door1, :falling}, state) do
+  def handle_info({:gpio_interrupt, pin_door1, :falling}, state = %{pin_door1: pin_door1}) do
     new_state = %{state | door1: :open}
     set_door_state(new_state.door1, new_state.door2, new_state.led1, new_state.led2)
     Logic.MqttWorker.send_door_state(new_state.door1, new_state.door2)
     {:noreply, new_state}
   end
 
-  def handle_info({:gpio_interrupt, @pin_door1, :rising}, state) do
+  def handle_info({:gpio_interrupt, pin_door1, :rising}, state = %{pin_door1: pin_door1}) do
     new_state = %{state | door1: :closed}
     set_door_state(new_state.door1, new_state.door2, new_state.led1, new_state.led2)
     Logic.MqttWorker.send_door_state(new_state.door1, new_state.door2)
     {:noreply, new_state}
   end
 
-  def handle_info({:gpio_interrupt, @pin_door2, :falling}, state) do
+  def handle_info({:gpio_interrupt, pin_door2, :falling}, state = %{pin_door2: pin_door2}) do
     new_state = %{state | door2: :open}
     set_door_state(new_state.door1, new_state.door2, new_state.led1, new_state.led2)
     Logic.MqttWorker.send_door_state(new_state.door1, new_state.door2)
     {:noreply, new_state}
   end
 
-  def handle_info({:gpio_interrupt, @pin_door2, :rising}, state) do
+  def handle_info({:gpio_interrupt, pin_door2, :rising}, state = %{pin_door2: pin_door2}) do
     new_state = %{state | door2: :closed}
     set_door_state(new_state.door1, new_state.door2, new_state.led1, new_state.led2)
     Logic.MqttWorker.send_door_state(new_state.door1, new_state.door2)
@@ -89,31 +97,31 @@ defmodule Hw.GpioWorker do
 
   defp signal_startup(led1, led2) do
     Gpio.write(led1, 1)
-    :timer.sleep(300)
+    :timer.sleep(350)
     Gpio.write(led1, 0)
     Gpio.write(led2, 1)
-    :timer.sleep(300)
+    :timer.sleep(350)
     Gpio.write(led1, 1)
     Gpio.write(led2, 0)
-    :timer.sleep(300)
+    :timer.sleep(350)
     Gpio.write(led1, 0)
     Gpio.write(led2, 1)
-    :timer.sleep(300)
+    :timer.sleep(350)
     Gpio.write(led1, 1)
     Gpio.write(led2, 1)
-    :timer.sleep(150)
-    Gpio.write(led1, 0)
-    Gpio.write(led2, 0)
-    :timer.sleep(150)
-    Gpio.write(led1, 1)
-    Gpio.write(led2, 1)
-    :timer.sleep(150)
+    :timer.sleep(200)
     Gpio.write(led1, 0)
     Gpio.write(led2, 0)
-    :timer.sleep(150)
+    :timer.sleep(200)
     Gpio.write(led1, 1)
     Gpio.write(led2, 1)
-    :timer.sleep(150)
+    :timer.sleep(200)
+    Gpio.write(led1, 0)
+    Gpio.write(led2, 0)
+    :timer.sleep(200)
+    Gpio.write(led1, 1)
+    Gpio.write(led2, 1)
+    :timer.sleep(200)
     Gpio.write(led1, 0)
     Gpio.write(led2, 0)
   end
