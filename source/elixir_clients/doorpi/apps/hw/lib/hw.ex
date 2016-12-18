@@ -5,11 +5,9 @@ defmodule Hw do
     import Supervisor.Spec, warn: false
 
     pins = Application.get_env(:hw, :pins)
+
     children = [
-      worker(Hw.GpioWorker, [ pins.pin_door1,
-                              pins.pin_door2,
-                              pins.pin_led1,
-                              pins.pin_led2]),
+      worker(Hw.GpioWorker, [pins]),
     ]
 
     opts = [strategy: :one_for_one, name: Hw.Supervisor]

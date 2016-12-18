@@ -13,13 +13,13 @@ defmodule Hw.GpioWorker do
     GenServer.cast(__MODULE__, {:set_led2, value})
   end
 
-  def init([pin_door1, pin_door2, pin_led1, pin_led2]) do
-    {:ok, led1} = Gpio.start_link(pin_led1, :output)
-    {:ok, led2} = Gpio.start_link(pin_led2, :output)
+  def init([pins]) do
+    {:ok, led1} = Gpio.start_link(pins.pin_led1, :output)
+    {:ok, led2} = Gpio.start_link(pins.pin_led2, :output)
     signal_startup(led1, led2)
 
-    {:ok, door1} = Gpio.start_link(pin_door1, :input)
-    {:ok, door2} = Gpio.start_link(pin_door2, :input)
+    {:ok, door1} = Gpio.start_link(pins.pin_door1, :input)
+    {:ok, door2} = Gpio.start_link(pins.pin_door2, :input)
     :ok = Gpio.set_int(door1, :both)
     :ok = Gpio.set_int(door2, :both)
 
@@ -28,12 +28,11 @@ defmodule Hw.GpioWorker do
                 led2: led2,
                 door1: :open,
                 door2: :open,
-                pin_door1: pin_door1,
-                pin_door2: pin_door2,
-                pin_led1: pin_led1,
-                pin_led2: pin_led2
+                pin_door1: pins.pin_door1,
+                pin_door2: pins.pin_door2,
+                pin_led1: pins.pin_led1,
+                pin_led2: pins.pin_led2
               }
-
     {:ok, state}
   end
 
