@@ -10,7 +10,7 @@ defmodule Hw do
                    pin_led1: pins[:pin_led1],
                    pin_led2: pins[:pin_led2]}
     children = [
-      worker(Hw.GpioWorker, [pins]),
+      worker(Hw.GpioWorker, [parameters]),
     ]
 
     opts = [strategy: :one_for_one, name: Hw.Supervisor]
