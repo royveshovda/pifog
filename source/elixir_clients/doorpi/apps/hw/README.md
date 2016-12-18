@@ -22,3 +22,21 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     end
     ```
 
+  To create a release, add a file called pifig.service in /lib/systemd/system/
+  run chmod 644 pifog.service
+
+
+
+  [Unit]
+  Description=PiFog Service running DoorPi
+  After=network.target
+
+  [Service]
+  Type=simple
+  Environment="HOME=/home/pi"
+  ExecStart=/home/pi/pifog/source/elixir_clients/doorpi/_build/dev/rel/hw/bin/hw start
+  ExecStop=/home/pi/pifog/source/elixir_clients/doorpi/_build/dev/rel/hw/bin/hw stop
+  RemainAfterExit=yes
+
+  [Install]
+  WantedBy=multi-user.target

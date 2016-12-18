@@ -1,7 +1,7 @@
 use Mix.Config
 
 config :logic,
-  name: "DoorPiEx"
+  name: "DoorPi"
 
 config :hw, :pins,
   pin_door1: 17,
