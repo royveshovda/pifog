@@ -2,7 +2,6 @@ defmodule Hw.GpioWorker do
   use GenServer
 
   def start_link(opts) do
-    IO.puts "start_link"
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
@@ -15,7 +14,6 @@ defmodule Hw.GpioWorker do
   end
 
   def init(pins) do
-    IO.puts "init"
     {:ok, led1} = Gpio.start_link(pins.pin_led1, :output)
     {:ok, led2} = Gpio.start_link(pins.pin_led2, :output)
     signal_startup(led1, led2)
