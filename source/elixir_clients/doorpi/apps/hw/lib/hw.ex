@@ -5,7 +5,7 @@ defmodule Hw do
     import Supervisor.Spec, warn: false
 
     pins = Application.get_env(:hw, :pins)
-
+    IO.inspect pins
     children = [
       worker(Hw.GpioWorker, [pins]),
     ]
