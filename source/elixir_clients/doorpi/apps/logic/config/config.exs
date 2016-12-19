@@ -1,6 +1,6 @@
 use Mix.Config
 
 config :logic,
-  name: "DoorPiEx"
+  name: "DoorPi"
 
 import_config "config.secret.exs"
