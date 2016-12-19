@@ -44,12 +44,18 @@ defmodule Logic.MqttWorker do
   end
 
   def handle_info({:mqttc, pid, :connected}, state) do
-    send_connected(pid, state.topic_connection)
+    Process.send_after(self(), :connected_ping, 1000)
     Logger.debug("Subscribing to #{state.topic_command}")
 
     :emqttc.subscribe(pid, state.topic_notify, 1)
     :emqttc.subscribe(pid, state.topic_command, 1)
+    {:noreply, state}
+  end
 
+  def handle_info(:connected_ping, state) do
+    IO.puts "Send connected"
+    send_connected(state.pid, state.topic_connection)
+    Process.send_after(self(), :connected_ping, 10000)
     {:noreply, state}
   end
 
@@ -88,6 +94,7 @@ defmodule Logic.MqttWorker do
     boot_time = "unknown" # TODO: Try to get boot time
     msg = %{connected: %{boot_time: boot_time, addresses: get_ip_address(), timestamp: get_timestamp_as_string()}}
     payload = Poison.encode!(msg)
+    IO.puts payload
     :emqttc.publish(pid, topic_connection, payload, [qos: 1, retain: true])
   end
 
