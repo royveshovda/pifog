@@ -75,7 +75,7 @@ defmodule Logic.MqttWorker do
   end
 
   defp handle_command("ping", id, pid, topic_event) do
-    msg = %{pong: %{id: id, timestamp: get_timestamp_as_string()}}
+    msg = %{pong: %{id: id, timestamp: get_timestamp_as_string(), ip: get_ip_address()}}
     msg_raw = Poison.encode!(msg)
     :emqttc.publish(pid, topic_event, msg_raw)
   end
