@@ -2,21 +2,50 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/mqtt.css" />
-    <title>Where to go</title>
+    <link rel="stylesheet" href="css/doorman.css" />
+    <script src="js/aws-iot-sdk-browser-bundle.js"></script>
+    <script src="js/status.2017.04.16_v1.js"></script>
+    <title>Office Status</title>
   </head>
   <body onload="run_main()">
     <div id="general">
-      <h1>Choose you next step</h1>
-      <div class="link">
-        <a href="status.html">Toilet status</a>
+      <h1>Have to go?</h1>
+      <div class="circlelarge" id="redStatus" style="background-color:red;display:none">RISKY</div>
+      <div class="circlelarge" id="yellowStatus" style="background-color:yellow;color:black;display:none">MAYBE</div>
+      <div class="circlelarge" id="greenStatus" style="background-color:green;display:none">GOGOGO</div>
+    </div>
+    <div id="doors" class="door">
+      <h2>Doors</h2>
+      <div class="circlesmall" id="circle1">F</div>
+      <div class="circlesmall" id="circle2">M</div>
+    </div>
+    <div id="environment" class="report">
+      <h2>Office Environment</h2>
+      <div class="value-report">
+        <div class="label">CO<sub>2</sub> (ppm): </div>
+        <div class="label">(less than 1000ppm = Good)</div>
+        <div id="sensorPpm" class="value">?</div>
       </div>
-      <div class="link">
-        <a href="doorman.html">Guard the door</a>
+      <div class="value-report">
+        <div class="label">Temperature (&#8451;): </div>
+        <div id="sensorTemp" class="value">?</div>
       </div>
-      <div class="link">
-        <a href="connections.html">Pis status</a>
+      <div class="value-report">
+        <div class="label">Humidity (%): </div>
+        <div id="sensorHum" class="value">?</div>
       </div>
     </div>
+    <div class="connection">
+      <h1>Connection</h1>
+      <div id="bottom" class="report">
+        <div class="value-report">
+          <div class="label">Last report (door)</div>
+          <div id="timestampIdDoor">?</div>
+        </div>
+        <div class="value-report">
+          <div class="label">Last report (env)</div>
+          <div id="timestampIdEnv">?</div>
+        </div>
+      </div>
   </body>
 </html>
