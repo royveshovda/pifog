@@ -11,5 +11,6 @@ rm -Rf staging
 #scp staging.zip activate-pi.sh pi@fogpi-1-002:/home/pi/
 #scp staging.zip activate-pi.sh pi@fogpi-1-003:/home/pi/
 #scp staging.zip activate-pi.sh pi@fogpi-1-004:/home/pi/
-scp staging.zip activate-pi.sh pi@labpi-003:/home/pi/
+#scp staging.zip activate-pi.sh pi@fogpi-1-005:/home/pi/
+#scp staging.zip activate-pi.sh pi@192.168.77.166:/home/pi/
 rm staging.zip

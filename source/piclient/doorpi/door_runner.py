@@ -1,13 +1,18 @@
 import json
 import time
-import paho.mqtt.client as mqtt
 import settings
 from shared import common
 from datetime import datetime
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
+import logging
 
 
 handler = None
 
+pin_door1 = 11 #BCM17
+pin_door2 = 12 # BCM18
+pin_door1_led = 13 # BCM27
+pin_door2_led = 15 # BCM22
 
 def init():
     global handler
@@ -19,17 +24,27 @@ def init():
         handler = gpio
     return
 
+# Custom Shadow callback
+def customShadowCallback_Update(payload, responseStatus, token):
+    if responseStatus == "timeout":
+        print("Update request " + token + " time out!")
+    if responseStatus == "accepted":
+        payloadDict = json.loads(payload)
+        print("~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Update request with token: " + token + " accepted!")
+        reported = payloadDict["state"]["reported"]
+        if "FemaleDoor" in reported:
+            print("FemaleDoor: " + str(payloadDict["state"]["reported"]["FemaleDoor"]))
 
-pin_door1 = 11 #BCM17
-pin_door2 = 12 # BCM18
-pin_door1_led = 13 # BCM27
-pin_door2_led = 15 # BCM22
+        if "MaleDoor" in reported:
+            print("MaleDoor: " + str(payloadDict["state"]["reported"]["MaleDoor"]))
 
+        if "connected" in reported:
+            print("connected: " + str(payloadDict["state"]["reported"]["connected"]))
 
-def on_connect(client, userdata, flags, rc):
-    client.subscribe(settings.topic_doorpi_command)
-    client.subscribe(settings.topic_doorpi_notify)
-    common.send_connected(client, settings.topic_doorpi_connection)
+        print("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+    if responseStatus == "rejected":
+        print("Update request " + token + " rejected!")
 
 
 def handle_command(client, message):
@@ -37,11 +52,11 @@ def handle_command(client, message):
     print("Command received:")
     print(payload)
 
-    cmd = json.loads(payload)
-    command = cmd["command"]
-    cmd_id = cmd["id"]
-    if command == "ping":
-        common.send_pong(client, cmd_id, settings.topic_doorpi_event)
+    #cmd = json.loads(payload)
+    #command = cmd["command"]
+    #cmd_id = cmd["id"]
+    #if command == "ping":
+    #    common.send_pong(client, cmd_id, settings.topic_doorpi_event)
 
 
 def handle_notification(message):
@@ -72,12 +87,13 @@ def send_data(client, door1_closed, door2_closed):
     # Prepare our sensor data in JSON format.
     payload = json.dumps({
         "state": {
-            "door1": door1_message,
-            "door2": door2_message,
-            "timestamp": str(datetime.now())
+            "reported": {
+                "FemaleDoor": door1_message,
+                "MaleDoor": door2_message
+            }
         }
     })
-    client.publish(settings.topic_doorpi_event, payload, qos=1, retain=True)
+    client.shadowUpdate(payload, customShadowCallback_Update, 5)
 
 
 def new_state(pin, old_state):
@@ -99,7 +115,14 @@ def set_led_state(door1_state, door2_state):
 
 
 def start():
-    client = common.setup_mqtt(on_connect, on_message, settings.topic_doorpi_connection)
+    shadow, client = common.setup_aws_shadow_client(settings.aws_endpoint,
+                                                    settings.aws_root_certificate,
+                                                    settings.aws_private_key,
+                                                    settings.aws_certificate,
+                                                    settings.device_name)
+    JSONPayload = '{"state":{"reported":{"connected":"true"}}}'
+    client.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
+
     handler.setup(pin_door1, pin_door2, pin_door1_led, pin_door2_led)
 
     handler.signal_startup(pin_door1_led, pin_door2_led)
@@ -128,7 +151,9 @@ def start():
                 print('States reported: '+str(states_reported))
             time.sleep(0.2)
     except KeyboardInterrupt:
-        client.loop_stop()
+        JSONPayload = '{"state":{"reported":{"connected":"false"}}}'
+        client.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
+        shadow.disconnect()
         handler.cleanup()
         print('stopped')
 

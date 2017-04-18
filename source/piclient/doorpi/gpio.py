@@ -14,7 +14,7 @@ def setup(pin1, pin2, pin1_led, pin2_led):
     GPIO.output(pin2_led, False)
 
 
-def get_state(pin: int):
+def get_state(pin):
     return GPIO.input(pin)
 
 

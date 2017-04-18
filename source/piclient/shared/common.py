@@ -2,9 +2,11 @@ from netifaces import interfaces, ifaddresses, AF_INET
 from uptime import boottime
 import json
 from datetime import datetime
-import paho.mqtt.client as mqtt
+#import paho.mqtt.client as mqtt
 import settings
 import time
+import logging
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 
 
 def get_network_addresses_formated():
@@ -89,3 +91,35 @@ def send_open_command_executed(client, cmd_id, command_name, topic):
         }
     })
     client.publish(topic, payload, qos=1, retain=False)
+
+
+def setup_aws_shadow_client(host, rootCAPath, privateKeyPath, certificatePath, device_name):
+    # Configure logging
+    logger = logging.getLogger("AWSIoTPythonSDK.core")
+    logger.setLevel(logging.INFO)
+    streamHandler = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    streamHandler.setFormatter(formatter)
+    logger.addHandler(streamHandler)
+
+    # Init AWSIoTMQTTShadowClient
+    shadow = AWSIoTMQTTShadowClient(device_name + "-client")
+    shadow.configureEndpoint(host, 8883)
+    shadow.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
+
+    # AWSIoTMQTTShadowClient configuration
+    shadow.configureAutoReconnectBackoffTime(1, 32, 20)
+    shadow.configureConnectDisconnectTimeout(10)  # 10 sec
+    shadow.configureMQTTOperationTimeout(5)  # 5 sec
+
+    #Last Will
+    shadow.configureLastWill('my/things/' + device_name + '/update', '{"state":{"reported":{"connected":"false"}}}', 1)
+
+    # Connect to AWS IoT
+    shadow.connect()
+
+    # Create a deviceShadow with persistent subscription
+    client = shadow.createShadowHandlerWithName(device_name, True)
+
+    #Send connected
+    return shadow, client

@@ -9,7 +9,6 @@ handler = None
 loudness_sensor_pin = 2
 dht_sensor_pin = 4
 
-
 def init():
     global handler
     if settings.is_fake():
@@ -19,6 +18,28 @@ def init():
         from sensorpi import read
         handler = read
     return
+
+
+def customShadowCallback_Update(payload, responseStatus, token):
+    if responseStatus == "timeout":
+        print("Update request " + token + " time out!")
+    if responseStatus == "accepted":
+        payloadDict = json.loads(payload)
+        print("~~~~~~~~~~~~~~~~~~~~~~~")
+        print("Update request with token: " + token + " accepted!")
+        reported = payloadDict["state"]["reported"]
+        if "temperature" in reported:
+            print("temperature: " + str(payloadDict["state"]["reported"]["temperature"]))
+        if "humidity" in reported:
+            print("humidity: " + str(payloadDict["state"]["reported"]["humidity"]))
+        if "co2" in reported:
+            print("co2: " + str(payloadDict["state"]["reported"]["co2"]))
+        if "connected" in reported:
+            print("connected: " + str(payloadDict["state"]["reported"]["connected"]))
+
+        print("~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+    if responseStatus == "rejected":
+        print("Update request " + token + " rejected!")
 
 
 def should_read_co2(boot_time):
@@ -41,11 +62,11 @@ def handle_command(client, message):
     print("Command received:")
     print(payload)
 
-    cmd = json.loads(payload)
-    command = cmd["command"]
-    cmd_id = cmd["id"]
-    if command == "ping":
-        common.send_pong(client, cmd_id, settings.topic_sensorpi_event)
+    #cmd = json.loads(payload)
+    #command = cmd["command"]
+    #cmd_id = cmd["id"]
+    #if command == "ping":
+    #    common.send_pong(client, cmd_id, settings.topic_sensorpi_event)
 
 
 def handle_notification(message):
@@ -66,19 +87,28 @@ def send_data(client, co2, temperature, humidity, loudness):
     # Prepare our sensor data in JSON format.
     payload = json.dumps({
         "state": {
-            "co2": co2,
-            "temperature": temperature,
-            "humidity": humidity,
-            "loudness": loudness,
-            "timestamp": str(datetime.now())
+            "reported": {
+                "co2": co2,
+                "temperature": temperature,
+                "humidity": humidity
+            }
         }
     })
-    client.publish(settings.topic_sensorpi_event, payload, qos=1, retain=True)
+    client.shadowUpdate(payload, customShadowCallback_Update, 5)
 
 
 def start():
     time.sleep(20)
-    client = common.setup_mqtt(on_connect, on_message, settings.topic_sensorpi_connection)
+
+    shadow, client = common.setup_aws_shadow_client(settings.aws_endpoint,
+                                                    settings.aws_root_certificate,
+                                                    settings.aws_private_key,
+                                                    settings.aws_certificate,
+                                                    settings.device_name)
+
+    JSONPayload = '{"state":{"reported":{"connected":"true"}}}'
+    client.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
+
     handler.setup(dht_sensor_pin, loudness_sensor_pin)
     d1 = datetime.min
     boot_time = boottime()
@@ -96,7 +126,9 @@ def start():
             else:
                 time.sleep(1)
     except KeyboardInterrupt:
-        client.loop_stop()
+        JSONPayload = '{"state":{"reported":{"connected":"false"}}}'
+        client.shadowUpdate(JSONPayload, customShadowCallback_Update, 5)
+        shadow.disconnect()
         handler.cleanup()
         print('stopped')
 
