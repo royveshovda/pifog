@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/doorman.css" />
-    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="js/aws-iot-sdk-browser-bundle.js"></script>
-    <script src="js/status.2017.04.19_v2.js"></script>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>
-    <script type="text/javascript" src="js/kuma-gauge.jquery.js"></script>
+    <script src="js/status.2017.04.19_v3.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>
+    <script src="js/kuma-gauge.jquery.js"></script>
+    <script src="js/tempgauge.jquery.js"></script>
+    <script src="js/tempgauge.hl.js"></script>
     <title>Office Status</title>
   </head>
   <body onload="run_main()">
@@ -19,8 +21,8 @@
     </div>
     <div id="doors" class="door">
       <h2>Doors</h2>
-      <div class="circlesmall" id="circle1">F</div>
-      <div class="circlesmall" id="circle2">M</div>
+      <div class="circlesmall" id="circle1"><img src="images/sym_woman.png" /></div>
+      <div class="circlesmall" id="circle2"><img src="images/sym_man.png" /></div>
     </div>
     <div id="environment" class="report">
       <h2>Office Environment</h2>
@@ -31,6 +33,7 @@
       <div class="value-report">
         <div class="label">Temperature (&#8451;): </div>
         <div id="sensorTemp" class="value">?</div>
+        <div class="tempGauge"></div>
       </div>
       <div class="value-report">
         <div class="label">Humidity (%): </div>

@@ -19,6 +19,11 @@ input{
 	display: inline-block;
 }
 
+.circlesmall img {
+	height: 70px;
+	padding: 5px;
+}
+
 .circlelarge{
 	width:200px;
 	height:200px;
