@@ -322,10 +322,10 @@ function set_unknown_state_door(){
 }
 
 function set_unknown_state_sensor(){
-  document.getElementById("sensorPpm").innerHTML = '?';
   document.getElementById("sensorTemp").innerHTML = '?';
   document.getElementById("sensorHum").innerHTML = '?';
   document.getElementById("timestampIdEnv").innerHTML = general_comment_sensor;
+  document.getElementById("gauge-co2").style.display = 'none';
 }
 
 function onConnectionLost() {
@@ -410,8 +410,8 @@ function set_doors_state(door1_state, door2_state, timestamp) {
 }
 
 function set_sensor_state(ppm, temp, hum, loud, timestamp) {
-  document.getElementById("sensorPpm").innerHTML = ppm;
   console.log("" + typeof(ppm) + " " + ppm );
+  document.getElementById("gauge-co2").style.display = 'block';
   var newGaugeVal = parseInt(ppm)
   $('.js-gauge--co2').kumaGauge('update', {
     value : newGaugeVal
@@ -420,6 +420,7 @@ function set_sensor_state(ppm, temp, hum, loud, timestamp) {
   document.getElementById("sensorTemp").innerHTML = temp;
   document.getElementById("sensorHum").innerHTML = hum;
   document.getElementById("timestampIdEnv").innerHTML = timestamp;
+
 
 }
 

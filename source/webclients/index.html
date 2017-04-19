@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="css/doorman.css" />
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="js/aws-iot-sdk-browser-bundle.js"></script>
-    <script src="js/status.2017.04.18_v1.js"></script>
+    <script src="js/status.2017.04.19_v1.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>
     <script type="text/javascript" src="js/kuma-gauge.jquery.js"></script>
     <title>Office Status</title>
@@ -26,25 +26,26 @@
       <h2>Office Environment</h2>
       <div class="value-report">
         <div class="label">CO<sub>2</sub> (ppm): </div>
-        <div class="label">(less than 1000ppm = Good)</div>
-
-        <div class="js-gauge js-gauge--co2 gauge"></div>
-        <script>
-          $('.js-gauge--co2').kumaGauge({
-            value : 0,
-            max: 1200,
-            label: {
-              display : true,
-              fontFamily : 'Arial',
-              fontColor : '#000',
-              fontSize : '12',
-              fontWeight : 'normal',
-              left: 'Healthy',
-              right: 'Dangerous'
-            }
-          });
-        </script>
-        <div id="sensorPpm" class="value">?</div>
+        <div id="gauge-co2">
+          <div class="js-gauge-co js-gauge--co2 gauge">
+            <script>
+              $('.js-gauge--co2').kumaGauge({
+                value : -1,
+                max: 1200,
+                min: 400,
+                label: {
+                  display : true,
+                  fontFamily : 'Arial',
+                  fontColor : '#000',
+                  fontSize : '12',
+                  fontWeight : 'normal',
+                  left: 'Healthy',
+                  right: 'Dangerous'
+                }
+              });
+            </script>
+          </div>
+        </div>
       </div>
       <div class="value-report">
         <div class="label">Temperature (&#8451;): </div>
