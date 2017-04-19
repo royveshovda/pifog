@@ -410,7 +410,6 @@ function set_doors_state(door1_state, door2_state, timestamp) {
 }
 
 function set_sensor_state(ppm, temp, hum, loud, timestamp) {
-  console.log("" + typeof(ppm) + " " + ppm );
   document.getElementById("gauge-co2").style.display = 'block';
   var newGaugeVal = parseInt(ppm)
   $('.js-gauge--co2').kumaGauge('update', {
