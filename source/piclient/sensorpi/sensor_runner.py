@@ -51,12 +51,6 @@ def should_read_co2(boot_time):
         return False
 
 
-def on_connect(client, userdata, flags, rc):
-    client.subscribe(settings.topic_sensorpi_command)
-    client.subscribe(settings.topic_sensorpi_notify)
-    common.send_connected(client, settings.topic_sensorpi_connection)
-
-
 def handle_command(client, message):
     payload = message.payload.decode('utf-8')
     print("Command received:")

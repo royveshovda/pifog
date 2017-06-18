@@ -121,5 +121,4 @@ def setup_aws_shadow_client(host, rootCAPath, privateKeyPath, certificatePath, d
     # Create a deviceShadow with persistent subscription
     client = shadow.createShadowHandlerWithName(device_name, True)
 
-    #Send connected
     return shadow, client
