@@ -14,25 +14,24 @@ def get_runner(device_type):
     if device_type == "status":
         from statuspi import status_runner
         return status_runner
+    elif device_type == "door":
+        from doorpi import door_runner
+        return door_runner
+    elif device_type == "camera":
+        from camerapi import camera_runner
+        return camera_runner
+    elif device_type == "button":
+        from buttonpi import button_runner
+        return button_runner
+    elif device_type == "sensor":
+        from sensorpi import sensor_runner
+        return sensor_runner
+    elif device_type == "blinkt":
+        from blinktpi import blinkt_runner
+        return blinkt_runner
     else:
-        if device_type == "door":
-            from doorpi import door_runner
-            return door_runner
-        else:
-            if device_type == "camera":
-                from camerapi import camera_runner
-                return camera_runner
-            else:
-                if device_type == "button":
-                    from buttonpi import button_runner
-                    return button_runner
-                else:
-                    if device_type == "sensor":
-                        from sensorpi import sensor_runner
-                        return sensor_runner
-                    else:
-                        print('Device_Type muse be set')
-                        return None
+        print('Device_Type must be set')
+        return None
 
 
 if __name__ == "__main__":

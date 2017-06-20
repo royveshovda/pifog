@@ -2,7 +2,6 @@ from netifaces import interfaces, ifaddresses, AF_INET
 from uptime import boottime
 import json
 from datetime import datetime
-#import paho.mqtt.client as mqtt
 import settings
 import time
 import logging
