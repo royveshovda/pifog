@@ -8,10 +8,14 @@ Why not use Cloud? They could work. Both Amazon and Microsoft have decent offeri
 This has a cost benefit, but comes at a lock-in price. The system can also be made more resilient to infrastructure errors if not everything is connected to the cloud. Parts of the system can benefit from connect as locally as possible. Hence the word fog. The architecture in this system (not fully deployed yet) will have both local connectivity and cloud back-bone (for things like machine learning and long term storage).
 
 ## Technical overview
-The Pis are connected using MQTT and using a broker caller EMQTTD (emqtt.io).
+The Pis are connected using MQTT and using a broker that is part of AWS IoT.
 They communicate using the MQTT's builtin pub-sub. The structure of the MQTT topics and message types are part of the experimentation.
 
+The communication also respects the protocol described by AWS to support what they call Shadow.
+
 For now the code on the Pis are written in Python. This might change as the plan includes experimenting using different languages as well. Elixir happen to be high on that candidate list.
+
+I addition there is a web client written in puse javascript to show the result on a web page.
 
 ![Overview](/Overview.png)
 
@@ -45,12 +49,7 @@ ButtonPi simply pushes a button to open the front door.
 Very simple web client using nothing but HTML and javascript.
 
 ## Improvements
-- Security: X.509 certificate to identify the actual Pi
-- Security: X.509 certificate to sign (and possible encrypt) the messages sent
-- Local broker: Stand up local MQTT broker(s) to allow local communication.
-- Slack: Notification when someone is at the door
-- Slack: Command to actually open the door
-- WebClient: Now we use login to the MQTT-broker. To scale we need to be able to log in more users.
-- Pi-software in different languages
-- Document the topics and message schemas
-- Protobuf (maybe in combination with JSON)
+- Describe how AWS IoT is set up.
+- Share Slack integration
+- Describe Slack integration
+- Update schematics
